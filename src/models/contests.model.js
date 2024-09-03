@@ -19,6 +19,7 @@ const ContestSchema = new mongoose.Schema({
   },
   type: {
     type: String,
+    enum: ['Image Design', 'Article Writing', 'Marketing Strategy', 'Digital Advertisement', 'Gaming Review', 'Book Review', 'Business Idea', 'Movie Review'],
     required: true,
   },
   prize: {
@@ -42,7 +43,7 @@ const ContestSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'approved', 'rejected'],
+    enum: ['pending', 'approved', 'rejected', 'confirmed', 'completed',],
     default: 'pending',
   },
   deadline: {

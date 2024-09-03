@@ -29,7 +29,16 @@ const UserSchema = new mongoose.Schema({
     required: true,
     default: ''
   },
-  winnerparcentange
+  contestsParticipated: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Contest',
+    },
+  ],
+  wins: {
+    type: Number,
+    default: 0,
+  }
 
 }, { timestamps: true });
 
