@@ -52,4 +52,4 @@ const ContestSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-export const ContestModel = mongoose.model("ContestModel",ContestSchema)
+export const Contest= mongoose.model("Contest",ContestSchema)
