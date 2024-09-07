@@ -255,3 +255,14 @@ const updateUserProfilePicture = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, user, "Avatar updated successfully"))
 
 })
+
+export {
+  register,
+  loginUser,
+  logoutUser,
+  updateAccountDetails,
+  updateUserProfilePicture,
+  getCurrentUser,
+  updatePassword,
+  refreshAccessToken
+}
