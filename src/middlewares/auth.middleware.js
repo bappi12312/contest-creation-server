@@ -26,3 +26,21 @@ export const verifyJwt = asyncHandler(async (req, _, next) => {
     throw new ApiError(401, error?.message || "Invalid Access Token")
   }
 })
+
+const admin = (req,res,next) => {
+  if(req.user && req.user.role === 'admin') {
+    next()
+  } else {
+    res.status(401).json({message: 'not authorized asa an admin'})
+  }
+}
+
+const creator = (req,res,next) => {
+  if(req.user && req.user.role === 'creator') {
+    next()
+  } else {
+    res.status(401).json({message: 'not authorized asa an creator'})
+  }
+}
+
+export {admin,creator}
