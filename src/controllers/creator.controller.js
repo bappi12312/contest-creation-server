@@ -76,3 +76,29 @@ try {
   
 }
 })
+
+// update a contest
+const updateContest = asyncHandler(async (req,res) => {
+  try {
+    let contest = await Contest.findById(req.params.id);
+    if(!contest) {
+      throw new ApiError(404,'not contest found')
+    }
+
+    if(contest.creator.toString() !== req.user._id.toString()){
+      return res.status(401).json({message: 'not authorized'})
+    }
+
+    contest = await Contest.findByIdAndUpdate(
+      req.params.id,
+      {$set: req.body},
+      {new: true}
+    )
+
+    return res.status(200).json(201,contest,'contest updated successfully')
+  } catch (error) {
+    console.log(error,"error updating contest");
+    return res.status(500).send('error updating contest')
+    
+  }
+})
