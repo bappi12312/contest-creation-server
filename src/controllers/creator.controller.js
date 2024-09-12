@@ -102,3 +102,24 @@ const updateContest = asyncHandler(async (req,res) => {
     
   }
 })
+
+// delete the contest
+const deleteContest = asyncHandler(async (req,res) {
+  try {
+    const contest = await Contest.findById(req.params.id);
+
+    if (!contest) {
+      return res.status(404).json({ message: 'Contest not found' });
+    }
+
+    if(contest.creator.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: 'Not authorized' });
+    }
+
+    await contest.remove()
+  } catch (error) {
+    console.log(error, 'Error removing contest')
+      return res.status(401).send('Error removing contest')
+    
+  }
+})
