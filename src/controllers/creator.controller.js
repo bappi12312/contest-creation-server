@@ -57,3 +57,22 @@ const getAllContests = asyncHandler(async (req,res) => {
     
   }
 })
+
+// get single contest 
+const getSingleContest = asyncHandler(async (req,res) => {
+try {
+  const contest = await Contest.findById(req.params.id).populate('creator','name')
+  
+  if(!contest) {
+    return new ApiError(404,"no contest found")
+  }
+  
+  return res.status(200).json(
+    new ApiResponse(201,contest,'contest sending successfully')
+  )
+} catch (error) {
+  console.log(error,'error while sending getsingleContests');
+  return res.status(500).send('error while sending getsingleContests')
+  
+}
+})
