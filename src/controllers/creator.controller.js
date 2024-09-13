@@ -29,6 +29,8 @@ const createContest = asyncHandler(async (req, res) => {
       image: image?.url || '',
       type,
       prize,
+      participants: [],
+      status: 'pending',
       creator: req.user._id,
     })
 
@@ -50,7 +52,7 @@ const getAllContests = asyncHandler(async (req, res) => {
 
     const query = search ? {$text: {$search: search}} : {}
 
-    const contests = await Contest.find({}).populate('creator', 'name')
+    const contests = await Contest.find({}).populate('winner')
     .limit(limit * 1)
     .skip(page - 1)
     .exec()
@@ -134,6 +136,39 @@ const deleteContest = asyncHandler(async (req, res) => {
     console.log(error, 'Error removing contest')
     return res.status(401).send('Error removing contest')
 
+  }
+})
+
+// register for a contest
+const registerForContest = asyncHandler(async (req,res) => {
+  try {
+    const contest = await Contest.findById(req.params.id)
+
+    if(!contest) {
+      return res.status(404).json({message: 'contest not found'})
+    }
+
+    const isAlreadyRegistered = contest.participants.some(
+      (participant) => participant.user.toString() = req.user.id
+    )
+
+    if(isAlreadyRegistered) {
+      return res.status(400).json({ message: 'Already registered for this contest' });
+    }
+
+    contest.participants.push({user: req.user._id, submission: req.body.submission})
+
+    await contest.save() //i don't know about but lets try
+
+
+    const user = await User.findById(req.user._id)
+    user.contestsParticipated.push(contest._id)
+    await user.save()
+
+   return res.status(200).json({ message: 'Successfully registered for the contest', contest });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error while registering for the contest');
   }
 })
 

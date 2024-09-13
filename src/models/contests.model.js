@@ -33,9 +33,14 @@ const ContestSchema = new mongoose.Schema({
   },
   participants: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    }
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+      submission: {
+        type: String,
+      },
+    },
   ],
   winner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -43,7 +48,7 @@ const ContestSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'approved', 'rejected', 'confirmed', 'completed',],
+    enum: ['pending', 'approved', 'rejected', 'confirmed', 'completed','winner_declared'],
     default: 'pending',
   },
   deadline: {

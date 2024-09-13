@@ -255,6 +255,25 @@ const updateUserProfilePicture = asyncHandler(async (req, res) => {
 
 })
 
+const getUserPercentage = asyncHandler(async (req,res) => {
+  try {
+    const user = await User.findById(req.user._id).populate('contestsParticipated')
+
+    if(!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const totalContests = user.contestsParticipated.length;
+    const wins = user.wins || 0;
+    const winPercentage = totalContests > 0 ? (wins / totalContests) * 100 : 0;
+
+    res.status(200).json({ winPercentage, totalContests, wins , message: 'getting results of user percentage'});
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error while getting user percentage');
+  }
+})
+
 export {
   register,
   loginUser,
@@ -263,5 +282,6 @@ export {
   updateUserProfilePicture,
   getCurrentUser,
   updatePassword,
-  refreshAccessToken
+  refreshAccessToken,
+  getUserPercentage,
 }
