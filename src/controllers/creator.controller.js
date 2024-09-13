@@ -136,3 +136,32 @@ const deleteContest = asyncHandler(async (req, res) => {
 
   }
 })
+
+// declare a winner for a contest
+const declareWinner = asyncHandler(async (req,res) => {
+  try {
+    const contest = await Contest.findById(req.params.id)
+
+    if(!contest) {
+      return res.status(404).json({message: 'No contest found'})
+    }
+
+    if(contest.status !== 'completed') {
+      return res.status(400).json({ message: 'Contest is not yet completed' })
+    }
+
+    const winner = await User.findById(req.body.winnerId)
+    if(!winner) {
+      return res.status(404).json({ message: 'Winner not found' });
+    }
+
+    contest.winner = winner._id;
+    contest.status = 'winner_declared'
+
+    await winner.save()
+    res.status(200).json({ message: 'Winner declared successfully', contest });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error while declaring winner');
+  }
+})
