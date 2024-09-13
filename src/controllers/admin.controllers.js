@@ -47,3 +47,36 @@ const rejectContest = asyncHandler(async (req,res) => {
   }
 })
 
+// manage users
+const users = asyncHandler(async (req,res) => {
+  try {
+    const users = await User.find({})
+    if(!users) {
+    res.status(400).json({message: 'No users found'})
+    }
+    return res.status(200).json(
+      new ApiResponse(201,users,'users sent successfully')
+    )
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error while sending users');
+  }
+})
+
+// delete a user
+const removeUser = asyncHandler(async (req,res) => {
+  try {
+    const user = await User.findById(req.params.id)
+    if(!user){
+      return res.status(404).json({message: 'User not found'})
+    }
+
+    await user.remove()
+
+    return res.status(200).json({ message: 'User removed' });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Server error while removing user');
+  }
+})
+

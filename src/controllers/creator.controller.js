@@ -45,15 +45,28 @@ const createContest = asyncHandler(async (req, res) => {
 
 const getAllContests = asyncHandler(async (req, res) => {
   try {
-    const contests = await Contest.find({}).populate('creator', 'name')
 
-    return res.status(200).json(
-      new ApiResponse(200, contests, 'get all contestes')
-    )
+    const {page = 1, limit = 10, search} = req.query
+
+    const query = search ? {$text: {$search: search}} : {}
+
+    const contests = await Contest.find({}).populate('creator', 'name')
+    .limit(limit * 1)
+    .skip(page - 1)
+    .exec()
+
+    const count = await Contest.countDocuments(query)
+
+
+   return res.status(200).json({
+      contests,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+    });
   } catch (error) {
     console.log(error);
 
-    res.status(500).send('server error', error);
+    res.status(500).send('server error while getting all contest', error);
 
   }
 })
